@@ -1,13 +1,24 @@
 package pzhihao.com.ztext;
 
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -21,51 +32,35 @@ import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import me.yokeyword.fragmentation.SupportActivity;
+import okhttp3.ResponseBody;
 import pzhihao.com.ztext.constant.Constant;
 
+import pzhihao.com.ztext.fragment.BlankFragment;
+import pzhihao.com.ztext.service.DownloadService;
 import pzhihao.com.ztext.service.WeatherService;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+
+
+public class MainActivity extends SupportActivity implements BlankFragment.OnBlankFragmentInteractionListener{
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*Flowable<String> flowable=Flowable.create(new FlowableOnSubscribe<String>() {
-            @Override
-            public void subscribe(FlowableEmitter<String> e) throws Exception {
-                e.onNext("Hello RXJava2");
-                e.onComplete();
-            }
-        }, BackpressureStrategy.BUFFER);
 
-        Subscriber<String> subscriber=new Subscriber<String>() {
-            @Override
-            public void onSubscribe(Subscription s) {
-                Log.v("Main","onSubscribe");
-                s.request(Long.MAX_VALUE);
-            }
 
-            @Override
-            public void onNext(String s) {
-                Log.v("Main",s);
-            }
 
-            @Override
-            public void onError(Throwable t) {
 
-            }
+        if (savedInstanceState == null){
+            loadRootFragment(R.id.fl_content, BlankFragment.newInstance("111","2222"));
+        }
 
-            @Override
-            public void onComplete() {
-                Log.v("Main","onComplete");
-            }
-        };
-
-        flowable.subscribe(subscriber);*/
 
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(Constant.BAIDUBASE_URL)
@@ -121,6 +116,46 @@ public class MainActivity extends AppCompatActivity {
         }).subscribe(consumer);
 
 
+        //单文件下载
+        /*FileDownloader.getImpl().create("http://dldir1.qq.com/qqfile/qq/QQ8.7/19113/QQ8.7.exe")
+                .setPath(Environment.getExternalStorageDirectory()+"/file/QQ.exe")
+                .setListener(new FileDownloadListener() {
+                    @Override
+                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                    }
+
+                    @Override
+                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                        Log.v("Main","已下载："+soFarBytes+"/总大小："+totalBytes);
+                    }
+
+                    @Override
+                    protected void completed(BaseDownloadTask task) {
+
+                    }
+
+                    @Override
+                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                    }
+
+                    @Override
+                    protected void error(BaseDownloadTask task, Throwable e) {
+
+                    }
+
+                    @Override
+                    protected void warn(BaseDownloadTask task) {
+
+                    }
+                }).start();*/
+
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
     }
 }
